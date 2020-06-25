@@ -1,6 +1,6 @@
 class ProjectSerializer < ActiveModel::Serializer
   # attributes to be serialized
-  attributes :id, :title, :course_id, :permissions, :planned_sprint_ids
+  attributes :id, :title, :course_id, :permissions, :planned_sprint_ids, :editable_sprint_ids
   # only render user_ids if user can read project
   attribute :user_ids, if: :can_read_project?
   # render stories if user can read stories
@@ -31,6 +31,10 @@ class ProjectSerializer < ActiveModel::Serializer
 
   def planned_sprint_ids
     object.sprint_plannings.where(planned: true).pluck(:sprint_id)
+  end
+
+  def editable_sprint_ids
+    object.sprint_plannings.where(editable: true).pluck(:sprint_id)
   end
 
 end

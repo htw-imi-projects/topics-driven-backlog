@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     patch 'sprint-planning-complete/:sprint_id', to: 'projects#complete_sprint'
     put 'sprint-planning-open/:sprint_id', to: 'projects#open_sprint'
     patch 'sprint-planning-open/:sprint_id', to: 'projects#open_sprint'
+    put 'sprint-planning-editable/:sprint_id', to: 'projects#sprint_editable'
+    patch 'sprint-planning-editable/:sprint_id', to: 'projects#sprint_editable'
     resources :stories, only: [:index, :create]
   end
 end

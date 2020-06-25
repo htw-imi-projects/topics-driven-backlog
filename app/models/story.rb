@@ -6,7 +6,7 @@ class Story < ApplicationRecord
     {:open => 0, :progressing => 1, :closed => 2, :canceled => 3}
   end
 
-  before_validation :update_sprint_position, on: :update
+  #before_validation :update_sprint_position, on: :update
   before_validation :set_status
   before_save :set_identifier, on: :create
   after_commit :create_project_position, on: :create

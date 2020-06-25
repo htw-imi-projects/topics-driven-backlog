@@ -200,8 +200,10 @@
     }
 
     .b-dropdown-minimal {
+
         .btn {
             padding: 0;
+            cursor: pointer;
         }
 
         .dropdown-item {

@@ -95,4 +95,24 @@ resourceModule.actions['planningOpen'] = function () {
     };
 }();
 
+/**
+ * Add planning editable action
+ * @returns {function}
+ */
+resourceModule.actions['planningEditable'] = function () {
+    /**
+     * Mark given sprint in given project as editable
+     *
+     * @param {object} operations
+     * @param {function} operations.dispatch
+     * @param {int} projectId
+     * @returns {object}
+     */
+    return async function ({ commit }, { projectId, courseId, sprintId, editable }) {
+        const res = await Vue.http.patch(`/projects/${projectId}/sprint-planning-editable/${sprintId}`, { editable });
+        commit(mutationTypes.SET_ONE, { item: res.body, parentId: courseId });
+        return res.body;
+    };
+}();
+
 export default resourceModule;

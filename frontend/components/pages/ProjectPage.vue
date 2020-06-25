@@ -1,24 +1,24 @@
 <template>
     <section id="project-page">
-        <router-link 
-            :to="`/courses/${course.id}-${slugify(course.title)}`" 
-            class="btn btn-primary float-right ml-2" 
+        <router-link
+            :to="`/courses/${course.id}-${slugify(course.title)}`"
+            class="btn btn-primary float-right ml-2"
             v-if="course">
 
             Back to course
         </router-link>
 
-        <router-link 
-            :to="`/projects/${project.id}-${slugify(project.title)}/print`" 
-            class="btn btn-primary float-right" 
+        <router-link
+            :to="`/projects/${project.id}-${slugify(project.title)}/print`"
+            class="btn btn-primary float-right"
             v-if="project">
 
             View report
         </router-link>
 
-        <router-link 
-            class="h4 text-muted" 
-            :to="`/courses/${course.id}-${slugify(course.title)}`" 
+        <router-link
+            class="h4 text-muted"
+            :to="`/courses/${course.id}-${slugify(course.title)}`"
             v-if="course">
 
             {{ course.short_title }} <small>({{ course.title }})</small>
@@ -36,8 +36,8 @@
             <template slot="content">
                 <div v-if="pastSprints.length">
                     <template v-for="sprint in pastSprints">
-                        <div 
-                            :key="sprint.id" 
+                        <div
+                            :key="sprint.id"
                             class="mb-4">
 
                             <h3 class="h5">
@@ -56,6 +56,35 @@
 
                                     Open sprint
                                 </BButton>
+
+                                <BButton
+                                    v-if="canMakeSprintEditable(sprint.id)"
+                                    class="float-right mb-3"
+                                    size="sm"
+                                    type="button"
+                                    variant="outline-primary"
+                                    v-confirm="{
+                                        action: () => planningEditable(sprint.id, true),
+                                        text: 'Do you want to make this sprint editable?'
+                                }">
+
+                                    Make sprint editable
+                                </BButton>
+
+                                <BButton
+                                    v-if="canLockSprint(sprint.id)"
+                                    class="float-right mb-3"
+                                    size="sm"
+                                    type="button"
+                                    variant="outline-danger"
+                                    v-confirm="{
+                                        action: () => planningEditable(sprint.id, false),
+                                        text: 'Do you want to lock this sprint?'
+                                }">
+
+                                    Lock sprint
+                                </BButton>
+
                             </h3>
 
                             <StoryTable
@@ -63,7 +92,7 @@
                                 :columns="tableColumns.history"
                                 :rows="storiesInSprint(sprint.id)"
                                 position-field="sprint_position"
-                                view="history"
+                                :view="isEditable(sprint.id) ? 'sprint' : 'history'"
                             />
 
                             <p v-else>No stories in this sprint</p>
@@ -71,10 +100,10 @@
                     </template>
                 </div>
 
-                <h3 
-                    class="h5" 
+                <h3
+                    class="h5"
                     v-else>
-                    
+
                     No past sprints!
                 </h3>
             </template>
@@ -114,10 +143,10 @@
                         view="sprint"/>
                 </template>
 
-                <h3 
-                    class="h5" 
+                <h3
+                    class="h5"
                     v-else>
-                    
+
                     No current sprint!
                 </h3>
             </template>
@@ -145,7 +174,7 @@
                                 action: planningComplete,
                                 text: 'This action is irreversible. While you will continue to be able to change the scope of this sprint if/while it is still in the future, the sprint will advance to the next sprint stage automatically when the time comes, and you will no longer be able to make changes. Proceed?'
                             }">
-                        
+
                             Mark sprint planning complete
                         </BButton>
                         {{ nextSprint.name }}
@@ -161,10 +190,10 @@
                 </template>
 
 
-                <h3 
-                    class="h5" 
+                <h3
+                    class="h5"
                     v-else>
-                    
+
                     No sprint to plan!
                 </h3>
             </template>
@@ -371,11 +400,11 @@ export default {
                     parentId: this.project.id,
                     ...this.newStory,
                 });
-    
+
                 this.newStory = this.$store.getters['stories/template']();
                 this.showForm = false;
                 this.$store.commit('resolvePendingChange');
-                
+
                 this.$nextTick(() => {
                     !this.$refs.storyForm || this.$refs.storyForm.$el.reset();
                 });
@@ -432,6 +461,36 @@ export default {
                     courseId: this.course.id,
                     projectId: this.project.id,
                     sprintId: sprintId,
+                });
+            } catch (err) {
+                /* istanbul ignore next */
+                this.$notify({
+                    title: 'Sprint update failed',
+                    text: err.body.message,
+                    type: 'error',
+                });
+            }
+        },
+
+        isEditable(sprintId) {
+            return this.project.editable_sprint_ids.indexOf(sprintId) > -1;
+        },
+
+        canMakeSprintEditable(sprintId) {
+            return this.project.editable_sprint_ids.indexOf(sprintId) < 0 && this.$store.state.user.role === 1;
+        },
+
+        canLockSprint(sprintId) {
+            return this.project.editable_sprint_ids.indexOf(sprintId) > -1 && this.$store.state.user.role === 1;
+        },
+
+        async planningEditable(sprintId, editable) {
+            try {
+                await this.$store.dispatch('projects/planningEditable', {
+                    courseId: this.course.id,
+                    projectId: this.project.id,
+                    sprintId: sprintId,
+                    editable,
                 });
             } catch (err) {
                 /* istanbul ignore next */
