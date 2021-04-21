@@ -16,7 +16,7 @@ services:
 
   app:
     # load image instead of building
-    image: htw-imi-projects/topics-driven-backlog:${TAG}
+    image: tdbacklog/topics-driven-backlog:${TAG}
     # rename container
     container_name: app
     # load production variables
