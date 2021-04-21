@@ -33,7 +33,7 @@
                         <BNavItem to="/projects">All Projects</BNavItem>
                         <BNavItem to="/courses">All Courses</BNavItem>
                         <BNavItem
-                            href="https://github.com/glutengo/topics-driven-backlog/issues/new"
+                            href="https://github.com/htw-imi-projects/topics-driven-backlog/issues/new"
                             target="_blank"
                             class="mr-5">
                             Report Issue

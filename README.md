@@ -1,6 +1,6 @@
 # Topics Driven Backlog
 
-[![codecov](https://codecov.io/gh/glutengo/topics-driven-backlog/branch/master/graph/badge.svg)](https://codecov.io/gh/glutengo/topics-driven-backlog)
+[![codecov](https://codecov.io/gh/htw-imi-projects/topics-driven-backlog/branch/master/graph/badge.svg)](https://codecov.io/gh/htw-imi-projects/topics-driven-backlog)
 
 
 ## Requirements
