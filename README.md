@@ -24,4 +24,6 @@ Run `npm stop` to properly shut down the container.
 
 # Deployment and Production
 
-Current Server: [https://http://backlog.f4.htw-berlin.de/](https://http://backlog.f4.htw-berlin.de/)
+Current Server: [https://backlog.f4.htw-berlin.de/](https://backlog.f4.htw-berlin.de/)
+
+## Deployment via github actions
